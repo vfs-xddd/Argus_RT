@@ -21,6 +21,7 @@ public class BasePage {
     protected HashMap<String, Integer> streets_map = Data.get_map_streets();
     protected int last_checked_street_id = 0;
     protected final ArrayList <String> STREET_LIST= Data.streets;
+    protected String TARGET_DATE = "3.03.2022";
 
     @BeforeAll
     public static void setupSettings() {
@@ -28,7 +29,7 @@ public class BasePage {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         WebDriverRunner.setWebDriver(driver);
-        Configuration.timeout = 5000;
+        Configuration.timeout = 10000;
         Configuration.holdBrowserOpen = true;
     }
 

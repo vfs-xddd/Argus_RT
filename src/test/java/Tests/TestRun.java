@@ -24,7 +24,11 @@ public class TestRun extends BasePage {
                 .click_new_repair_problem()
                 .select_typeRepairTask_asType_L()
                 .select_groupInteractionRule_asType_adress()
-                .add_correct_adress();
+                .add_correct_adress()
+                .click_calendar()
+                .select_day()
+                .click_calendar()
+                .set_hour_slider();
 
 
         System.out.println("++");

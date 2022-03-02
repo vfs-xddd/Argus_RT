@@ -40,6 +40,9 @@ public class NewRepairProblemPage extends BasePage {
     @FindBy(how = How.XPATH, using = "//span[@class='ui-autocomplete-token-label']")
     private SelenideElement adress_field_span_when_selected_but_notAdded;
 
+    @FindBy(how = How.XPATH, using = "//input[@id= 'task_instance_plan_form-start_date_input_input']")
+    private SelenideElement calendar;
+
 
     @DisplayName("NewRepairProblemPage checked open")
     public NewRepairProblemPage isOpened() {
@@ -138,6 +141,11 @@ public class NewRepairProblemPage extends BasePage {
         String street_name = STREET_LIST.get(street_id);
         last_checked_street_id = street_id;
         streets_map.put(street_name, adress_number);
+    }
+
+    public DatePicker click_calendar() {
+        calendar.scrollIntoView(true).click();
+        return page(DatePicker.class);
     }
 
     public NewRepairProblemPage sleep(int ms) {
