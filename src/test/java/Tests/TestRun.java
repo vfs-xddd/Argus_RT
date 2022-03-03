@@ -28,7 +28,9 @@ public class TestRun extends BasePage {
                 .click_calendar()
                 .select_day()
                 .click_calendar()
-                .set_hour_slider();
+                .set_hour_slider()
+                .click_calendar()
+                .set_minute_slider();
 
 
         System.out.println("++");

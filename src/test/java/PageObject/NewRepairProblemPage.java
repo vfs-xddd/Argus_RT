@@ -144,6 +144,7 @@ public class NewRepairProblemPage extends BasePage {
     }
 
     public DatePicker click_calendar() {
+        isOpened();
         calendar.scrollIntoView(true).click();
         return page(DatePicker.class);
     }

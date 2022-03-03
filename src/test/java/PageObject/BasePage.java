@@ -22,6 +22,8 @@ public class BasePage {
     protected int last_checked_street_id = 0;
     protected final ArrayList <String> STREET_LIST= Data.streets;
     protected String TARGET_DATE = "3.03.2022";
+    protected int TARGET_HOUR = 8;
+    protected int TARGET_MIN = 0;
 
     @BeforeAll
     public static void setupSettings() {
