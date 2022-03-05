@@ -10,6 +10,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,6 @@ public class TasksPage extends BasePage{
 
     @FindBy(how = How.XPATH, using = "//tbody[@id='tbl_frm-tbl_data']/parent::table")
     private SelenideElement table_body;
-    private Boolean was_scrolled = false;
 
 
     @DisplayName("TaskPage checked open")
@@ -68,6 +68,11 @@ public class TasksPage extends BasePage{
 
     public TasksPage expand_monitoring_regions_region1() {
         monitoring_regions_region1_toggler.shouldBe(Condition.visible).click();
+        for (int i=0; !monitoring_regions_region1_central.isDisplayed(); i++) {
+            if (i>5) monitoring_regions_region1_central.shouldBe(Condition.visible, Duration.ofSeconds(3));
+            monitoring_regions_region1_toggler.click();
+            sleep(1000);
+        }
         monitoring_regions_region1_central.shouldBe(Condition.visible);
         return page(this);}
 
@@ -77,14 +82,13 @@ public class TasksPage extends BasePage{
         while (this.tasksList_tr.size() < expected_tasks_num) {
             actions().sendKeys(table_body, Keys.END).click().perform();
         }
-        this.was_scrolled = true;
         Assertions.assertEquals(expected_tasks_num, this.tasksList_tr.size());
     }
 
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
     public List <String> get_all_OPR_links() {
         String oprs_name_starts_with = "Охранно-предупредительные";
-        if (!was_scrolled) scroll_and_get_full_tr_list();
+        scroll_and_get_full_tr_list();
         String date = curentDate();
 
         return tasksList_a.stream()
@@ -97,7 +101,7 @@ public class TasksPage extends BasePage{
     @DisplayName("Все пустые ППР и с текущей датой")
     public List <String> get_all_emtyGroups_links() {
         String oprs_name_starts_with = "ППР";
-        if (!was_scrolled) scroll_and_get_full_tr_list();
+        scroll_and_get_full_tr_list();
         String date = curentDate();
 
         return tasksList_a.stream()
