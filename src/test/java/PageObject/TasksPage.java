@@ -2,8 +2,6 @@ package PageObject;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import com.sun.istack.Nullable;
-import groovyjarjarpicocli.CommandLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.Keys;
@@ -43,6 +41,9 @@ public class TasksPage extends BasePage{
     @FindBy(how = How.XPATH, using = "//tbody[@id='tbl_frm-tbl_data']/parent::table")
     private SelenideElement table_body;
 
+    @FindBy(how = How.XPATH, using = "//button[@id='mmf-update_model']")
+    private SelenideElement reloadBtn;
+
 
     @DisplayName("TaskPage checked open")
     public static TasksPage isOpened() {
@@ -76,9 +77,11 @@ public class TasksPage extends BasePage{
         monitoring_regions_region1_central.shouldBe(Condition.visible);
         return page(this);}
 
-    @DisplayName("List of tr --> this.taskslist")
-    private void scroll_and_get_full_tr_list() {
+    @DisplayName("Scroll while get full tasks list")
+    private void scroll_and_get_full_tasks_list() {
+        //парсим кол-во нарядов в меню  слева в статистике
         int expected_tasks_num = Integer.parseInt(monitoring_regions_region1_central.parent().sibling(0).getText().split("/")[0]);
+        reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         while (this.tasksList_tr.size() < expected_tasks_num) {
             actions().sendKeys(table_body, Keys.END).click().perform();
         }
@@ -88,7 +91,7 @@ public class TasksPage extends BasePage{
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
     public List <String> get_all_OPR_links() {
         String oprs_name_starts_with = "Охранно-предупредительные";
-        scroll_and_get_full_tr_list();
+        scroll_and_get_full_tasks_list();
         String date = curentDate();
 
         return tasksList_a.stream()
@@ -101,7 +104,7 @@ public class TasksPage extends BasePage{
     @DisplayName("Все пустые ППР и с текущей датой")
     public List <String> get_all_emtyGroups_links() {
         String oprs_name_starts_with = "ППР";
-        scroll_and_get_full_tr_list();
+        scroll_and_get_full_tasks_list();
         String date = curentDate();
 
         return tasksList_a.stream()
