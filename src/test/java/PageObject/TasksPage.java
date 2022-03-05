@@ -8,7 +8,9 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -70,22 +72,17 @@ public class TasksPage extends BasePage{
         }
         Assertions.assertEquals(expected_tasks_num, this.tasksList_tr.size());
     }
-
+    @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
     public List <String> get_all_OPR_links() {
         String oprs_name_starts_with = "Охранно-предупредительные";
         scroll_and_get_full_tr_list();
-
+        String date = curentDate();
 
         return tasksList_a.stream()
                 .filter(el -> el.getText().contains(oprs_name_starts_with))
+                .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date))
                 .map(el -> el.getAttribute("href"))
                 .collect(Collectors.toList());
-
-    }
-
-    public void click_OPR_task_if_it_exist() {
-        tasksList_tr.get(0).sibling(1);
-        System.out.println("fd");
     }
 
 }

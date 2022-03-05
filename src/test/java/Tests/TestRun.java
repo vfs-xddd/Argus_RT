@@ -61,14 +61,16 @@ public class TestRun extends BasePage {
                     .select_monitoringRegions_region1_central()
                     .get_all_OPR_links();
 
-        OneTaskPage.open(tasks_href.get(0))
-                .click_closeBtn()
-                .chose_type_of_closingWork()
-                .chose_reason_of_troubles()
-                .click_dialog_form_nextBtn()
-                .click_dialog_form_saveBtn()
-                .close_task_win()
-                .isOpened();
+        tasks_href.forEach(
+                href -> OneTaskPage.open(href)
+                        .click_closeBtn()
+                        .chose_type_of_closingWork()
+                        .chose_reason_of_troubles()
+                        .click_dialog_form_nextBtn()
+                        .click_dialog_form_saveBtn()
+                        .close_task_win()
+                        .isOpened());
+
     }
 
 

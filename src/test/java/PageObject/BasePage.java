@@ -10,10 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.$x;
@@ -68,7 +66,14 @@ public class BasePage {
     String elem_xPath = "//li[@data-label='?']".replace("?", selected_text);
     first_field_toClick.shouldBe(Condition.visible).click();
     $x(elem_xPath).shouldBe(Condition.visible).click();
-}
+    }
+
+    protected static String curentDate() {
+        Date date = new Date(); // This object contains the current date value
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        return formatter.format(date);
+
+    }
 
     @AfterAll
     public static void closeWebDriver() {
