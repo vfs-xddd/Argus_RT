@@ -1,16 +1,18 @@
 package Tests;
 
 import PageObject.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class TestRun extends BasePage {
 
-    @Test
-    public void run(){
 
-        close_usual_tasks();
+    public void run(){
+        close_all_OPR_tasks();
+        close_all_PPR_tasks();
     }
 
     public void Test1() {
@@ -43,7 +45,8 @@ public class TestRun extends BasePage {
         System.out.println("++");
     }
 
-    public void close_usual_tasks() {
+    @BeforeAll
+    public static void start() {
         AuthorisationPage.open()
                 .isOpened()
                 .send_login()
@@ -51,14 +54,19 @@ public class TestRun extends BasePage {
                 .click_submitBtn()
                 .isOpened()
                 .click_menu_tasks()
-                .click_menu_tasks_listTasks();
+                .click_menu_tasks_listTasks()
+                .click_monitoringRegions()
+                .expand_monitoring_regions_region1()
+                .select_monitoringRegions_region1_central();        //Выбран Центральный
+    }
 
-        List <String> tasks_OPR_href = TasksPage
-                    .isOpened()
-                    .click_monitoringRegions()
-                    .expand_monitoring_regions_region1()
-                    .select_monitoringRegions_region1_central()
-                    .get_all_OPR_links();
+    @Test
+    public void close_all_OPR_tasks() {
+
+        List<String> tasks_OPR_href = TasksPage
+                .isOpened()
+                .is_checked_monitoringRegions_region1_central()
+                .get_all_OPR_links();
 
         tasks_OPR_href.forEach(
                 href -> OneTaskPage.open(href)
@@ -68,9 +76,11 @@ public class TestRun extends BasePage {
                         .click_dialog_form_nextBtn()
                         .click_dialog_form_saveBtn()
                         .close_task_win());
+    }
 
+    @Test
+    public void close_all_PPR_tasks() {
 
-        new TasksPage();
         List <String> GroupTasks_href = TasksPage
                 .isOpened()
                 .is_checked_monitoringRegions_region1_central()
@@ -85,7 +95,6 @@ public class TestRun extends BasePage {
                         .click_dialog_form_nextBtn()
                         .click_dialog_form_saveBtn()
                         .close_taskGroup_win());
-
     }
 
 

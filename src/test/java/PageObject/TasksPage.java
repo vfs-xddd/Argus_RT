@@ -2,6 +2,8 @@ package PageObject;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import com.sun.istack.Nullable;
+import groovyjarjarpicocli.CommandLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.Keys;
@@ -64,9 +66,9 @@ public class TasksPage extends BasePage{
         return page(this);
     }
 
-
     public TasksPage expand_monitoring_regions_region1() {
         monitoring_regions_region1_toggler.shouldBe(Condition.visible).click();
+        monitoring_regions_region1_central.shouldBe(Condition.visible);
         return page(this);}
 
     @DisplayName("List of tr --> this.taskslist")
@@ -88,7 +90,7 @@ public class TasksPage extends BasePage{
         return tasksList_a.stream()
                 .filter(el -> el.getText().contains(oprs_name_starts_with))
                 .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date))
-                .map(el -> el.getAttribute("href")).limit(2)
+                .map(el -> el.getAttribute("href"))
                 .collect(Collectors.toList());
     }
 
@@ -101,14 +103,12 @@ public class TasksPage extends BasePage{
         return tasksList_a.stream()
                 .filter(el -> el.getText().contains(oprs_name_starts_with))
             //  .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date))
-                .map(el -> el.getAttribute("href")).limit(2)
+                .map(el -> el.getAttribute("href"))
                 .collect(Collectors.toList());
     }
 
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты. Все пустые ППР и с текущей датой")
     public List <List<String>> get_all_OPR_and_emtyGroups_links() {
-        /**[0] список ОПР
-         * [1] список ППР*/
 
         List <List<String>> res = new ArrayList<>();
         res.add(get_all_OPR_links());
