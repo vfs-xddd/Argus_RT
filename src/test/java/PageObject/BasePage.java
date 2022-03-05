@@ -1,9 +1,12 @@
 package PageObject;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -13,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.codeborne.selenide.Selenide.$x;
+
 public class BasePage {
 
     protected final String LOGIN = "VLG_ANTONOV_V";
@@ -21,9 +26,12 @@ public class BasePage {
     protected HashMap<String, Integer> streets_map = Data.get_map_streets();
     protected int last_checked_street_id = 0;
     protected final ArrayList <String> STREET_LIST= Data.streets;
-    protected String TARGET_DATE = "3.03.2022";
-    protected int TARGET_HOUR = 8;
-    protected int TARGET_MIN = 0;
+    protected String TARGET_DATE = "4.03.2022";     //dont forget to fix data to dd.mm.yyyy
+    protected int TARGET_HOUR_START = 8;
+    protected int TARGET_HOUR_END = 17;
+    protected int TARGET_MIN_START = 0;
+    protected int TARGET_MIN_END = 0;
+    protected final String REGION_NAME = "Волгоград ЛКУ Центральный";
 
     @BeforeAll
     public static void setupSettings() {
@@ -34,6 +42,17 @@ public class BasePage {
         Configuration.timeout = 10000;
         Configuration.holdBrowserOpen = true;
     }
+//    @BeforeEach
+//    public void start() {
+//        AuthorisationPage.open()
+//                .isOpened()
+//                .send_login()
+//                .send_password()
+//                .click_submitBtn()
+//                .isOpened()
+//                .click_menu_repairing()
+//                .click_new_repair_problem();
+//    }
 
 //    @BeforeAll
 //    static void prepare_steps() {
@@ -44,10 +63,12 @@ public class BasePage {
 //                .click_submitBtn()
 //                .isOpened();
 //    }
-    public void select_in_dropDownList() {
 
-    }
-
+    protected static void select_in_DropDownMenu(SelenideElement first_field_toClick, String selected_text){
+    String elem_xPath = "//li[@data-label='?']".replace("?", selected_text);
+    first_field_toClick.shouldBe(Condition.visible).click();
+    $x(elem_xPath).shouldBe(Condition.visible).click();
+}
 
     @AfterAll
     public static void closeWebDriver() {

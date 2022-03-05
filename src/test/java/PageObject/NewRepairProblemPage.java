@@ -3,11 +3,14 @@ package PageObject;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.*;
@@ -41,7 +44,14 @@ public class NewRepairProblemPage extends BasePage {
     private SelenideElement adress_field_span_when_selected_but_notAdded;
 
     @FindBy(how = How.XPATH, using = "//input[@id= 'task_instance_plan_form-start_date_input_input']")
-    private SelenideElement calendar;
+    private SelenideElement calendar_div_start_date;
+
+    @FindBy(how = How.XPATH, using = "//input[@id= 'task_instance_plan_form-finish_date_input_input']")
+    private SelenideElement calendar_div_end_date;
+
+    @FindBy(how = How.XPATH, using = "//tbody[@id= 'group_interaction_info_form-tab_view-group_interaction_rule_table_data']//tr")
+    private List<SelenideElement> list_tr_ofRules = new ArrayList<>();
+
 
 
     @DisplayName("NewRepairProblemPage checked open")
@@ -60,7 +70,7 @@ public class NewRepairProblemPage extends BasePage {
     public NewRepairProblemPage select_typeRepairTask_asType_L() {
         click_typeRepairTask();
         typeRepairTask_L.shouldBe(Condition.visible).click();
-        typeRepairTask.getText().equals("Л");
+        Assertions.assertTrue(typeRepairTask.getText().equals("Л"));
         return page(this);
     }
 
@@ -98,7 +108,7 @@ public class NewRepairProblemPage extends BasePage {
                 adress_field.sendKeys(adress);
                 click_to_autocompliteAdress(street_name);
                 click_add_ruleBtn();
-                if (is_adress_adedd()) {save_street_last_idAdressNumber(street_id, i);
+                if (is_adress_adedd(list_tr_ofRules.size())) {save_street_last_idAdressNumber(street_id, i);
                     return page(this);
                 }
                 if (i%2==0) even++;
@@ -111,6 +121,15 @@ public class NewRepairProblemPage extends BasePage {
         }
 
 
+        return page(this);
+    }
+
+    public NewRepairProblemPage add_all_correct_adress_till(int number_of) {
+        int i =0;
+        while (i<number_of) {
+            add_correct_adress(); i++;
+        }
+        Assertions.assertTrue(i < list_tr_ofRules.size());
         return page(this);
     }
 
@@ -132,9 +151,10 @@ public class NewRepairProblemPage extends BasePage {
     }
 
     @DisplayName("Проверяем что в таблице правил появились данные")
-    private Boolean is_adress_adedd() {
+    private Boolean is_adress_adedd(int list_size_befor) {
     //ожидание
-        return !rulesTable_firstTd.getText().equals("Нет объектов");
+        //return !rulesTable_firstTd.getText().equals("Нет объектов");
+        return list_tr_ofRules.size()>list_size_befor;
     }
 
     private void save_street_last_idAdressNumber(int street_id, int adress_number) {
@@ -143,9 +163,15 @@ public class NewRepairProblemPage extends BasePage {
         streets_map.put(street_name, adress_number);
     }
 
-    public DatePicker click_calendar() {
+    public DatePicker click_calendar_startDate() {
         isOpened();
-        calendar.scrollIntoView(true).click();
+        calendar_div_start_date.scrollIntoView(true).click();
+        return page(DatePicker.class);
+    }
+
+    public DatePicker click_calendar_endDate() {
+        isOpened();
+        calendar_div_end_date.scrollIntoView(true).click();
         return page(DatePicker.class);
     }
 
