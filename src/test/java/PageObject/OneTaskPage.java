@@ -4,8 +4,6 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -25,16 +23,16 @@ public class OneTaskPage extends BasePage{
     private static SelenideElement span_for_scrolling;
 
     @FindBy(how = How.XPATH, using = "//label[@id='signal_process_dialog_form-close_problem_close_work_label']")
-    private static SelenideElement field_chose_type_work;
+    private static SelenideElement field_choose_type_work;
 
     @FindBy(how = How.XPATH, using = "//label[@id='signal_process_dialog_form-close_problem_close_code_menu_label']")
-    private static SelenideElement field_chose_reason_of_troubles;
+    private static SelenideElement field_choose_reason_of_troubles;
 
     @FindBy(how = How.XPATH, using = "//button[@id='signal_process_dialog_form-close_problem_wizard_next']")
     private static SelenideElement dialog_form_nextBtn;
 
     @FindBy(how = How.XPATH, using = "//span[@id='signal_process_dialog_title']")
-    private static SelenideElement dialog_form_chose_worker_stage;
+    private static SelenideElement dialog_form_choose_worker_stage;
 
     @FindBy(how = How.XPATH, using = "//div[@class='dialog-footer-buttons']/button/span[contains(text(), 'Сохранить')]")
     private static SelenideElement dialog_form_saveBtn;
@@ -68,18 +66,18 @@ public class OneTaskPage extends BasePage{
     }
 
     public OneTaskPage chose_type_of_closingWork() {
-        BasePage.select_in_DropDownMenu(field_chose_type_work, "ПР-Прочие - Ремонт");
+        BasePage.select_in_DropDownMenu(field_choose_type_work, "ПР-Прочие - Ремонт");
         return page(this);
     }
 
     public OneTaskPage chose_reason_of_troubles() {
-        BasePage.select_in_DropDownMenu(field_chose_reason_of_troubles, "ПР-2-Предупредительный ремонт");
+        BasePage.select_in_DropDownMenu(field_choose_reason_of_troubles, "ПР-2-Предупредительный ремонт");
         return page(this);
     }
 
     public OneTaskPage click_dialog_form_nextBtn() {
         dialog_form_nextBtn.scrollIntoView(true).shouldBe(Condition.visible).click();
-        dialog_form_chose_worker_stage.shouldBe(Condition.appear);
+        dialog_form_choose_worker_stage.shouldBe(Condition.appear);
         return page(this);
     }
 
