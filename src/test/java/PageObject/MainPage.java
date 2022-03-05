@@ -13,9 +13,6 @@ import static com.codeborne.selenide.Selenide.page;
 
 public class MainPage extends BasePage {
 
-//    @FindBy(how = How.XPATH, using = "//h1[@id='logo']//following-sibling::ul/*/a")
-//    private static List<SelenideElement> nav;
-
     @FindBy(how = How.XPATH, using = "//div[@id='mmf-main_menu_bar']")
     private SelenideElement main_menu;
 
@@ -30,7 +27,6 @@ public class MainPage extends BasePage {
 
     @FindBy(how = How.XPATH, using = "//div[@id='mmf-main_menu_bar']//span[contains(text(), 'Задачи')]/ancestor::li//span[contains(text(), 'Список задач')]")
     private SelenideElement menu_listTasks;
-
 
 
     @DisplayName("MainPage checked open")
@@ -66,10 +62,5 @@ public class MainPage extends BasePage {
         return page(this);
     }
 
-//    public MainPage search_created_task() {
-//        search_field.sendKeys(task_name);
-//        if (search_field.exists()) {search_field.sendKeys(Keys.ENTER);}
-//        return page(this);
-//    }
 
 }

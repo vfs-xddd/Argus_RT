@@ -40,27 +40,6 @@ public class BasePage {
         Configuration.timeout = 10000;
         Configuration.holdBrowserOpen = true;
     }
-//    @BeforeEach
-//    public void start() {
-//        AuthorisationPage.open()
-//                .isOpened()
-//                .send_login()
-//                .send_password()
-//                .click_submitBtn()
-//                .isOpened()
-//                .click_menu_repairing()
-//                .click_new_repair_problem();
-//    }
-
-//    @BeforeAll
-//    static void prepare_steps() {
-//        AuthorisationPage.open()
-//                .isOpened()
-//                .send_login()
-//                .send_password()
-//                .click_submitBtn()
-//                .isOpened();
-//    }
 
     protected static void select_in_DropDownMenu(SelenideElement first_field_toClick, String selected_text){
     String elem_xPath = "//li[@data-label='?']".replace("?", selected_text);

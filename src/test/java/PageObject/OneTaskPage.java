@@ -94,18 +94,3 @@ public class OneTaskPage extends BasePage{
     }
 }
 
-
-//
-//    @DisplayName("Тип: Все")
-//    private NewRepairProblemPage click_typeRepairTask() {
-//        typeRepairTask.shouldBe(Condition.visible).click();
-//        return page(this);
-//    }
-//
-//    @DisplayName("Тип: Л")
-//    public NewRepairProblemPage select_typeRepairTask_asType_L() {
-//        click_typeRepairTask();
-//        typeRepairTask_L.shouldBe(Condition.visible).click();
-//        Assertions.assertTrue(typeRepairTask.getText().equals("Л"));
-//        return page(this);
-//}
