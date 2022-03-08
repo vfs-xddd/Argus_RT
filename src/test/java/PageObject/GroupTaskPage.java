@@ -48,6 +48,12 @@ public class GroupTaskPage extends BasePage{
         return page(GroupTaskPage.class);
     }
 
+    public static GroupTaskPage open_here(String href) {
+        Selenide.open(href, OneTaskPage.class);
+        is_open();
+        return page(GroupTaskPage.class);
+    }
+
     public static GroupTaskPage is_open() {
         Assertions.assertTrue(driver.getTitle().contains("ППР"));
         return page(GroupTaskPage.class);
