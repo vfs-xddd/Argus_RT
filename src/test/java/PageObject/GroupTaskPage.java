@@ -11,8 +11,7 @@ import org.openqa.selenium.support.How;
 
 import java.util.regex.Pattern;
 
-import static com.codeborne.selenide.Selenide.$x;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 
 public class GroupTaskPage extends BasePage{
     private static String default_win_handle;
@@ -175,11 +174,15 @@ public class GroupTaskPage extends BasePage{
         return page(this);
     }
 
-    public GroupTaskPage newTaskForm_select_Time() {
-        newTaskForm_time.shouldBe(Condition.visible).click();
+    public GroupTaskPage newTaskForm_select_Time() {    //$возможно лучшая реализация
         String ready_xPath = selected_time_xPath.replace("?", TARGET_TASKS_TIME);
-        $x(ready_xPath).shouldBe(Condition.visible).click();
-        newTaskForm_time.shouldHave(Condition.text(TARGET_TASKS_TIME));
+        for (int i=0; !newTaskForm_time.getText().equals(TARGET_TASKS_TIME); i++) {
+            newTaskForm_time.shouldBe(Condition.visible).click();
+            $x(ready_xPath).click();
+            sleep(1000);
+            if (i>5) throw new RuntimeException("Cant select time. i: " +i);
+        }
+        Assertions.assertEquals(TARGET_TASKS_TIME, newTaskForm_time.getText());
         return page(this);
     }
 

@@ -26,7 +26,7 @@ public class BasePage {
     protected HashMap<String, Integer> streets_map = Data.get_map_streets();
     protected int last_checked_street_id = 0;
     protected final ArrayList <String> STREET_LIST= Data.streets;
-    protected static String TARGET_DATE = "09.03.2022";
+    protected static String TARGET_DATE = "10.03.2022";
     protected int TARGET_HOUR_START = 8;
     protected int TARGET_HOUR_END = 17;
     protected int TARGET_MIN_START = 0;
