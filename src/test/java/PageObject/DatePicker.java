@@ -8,12 +8,14 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
+import java.util.regex.Pattern;
+
 import static com.codeborne.selenide.Selenide.*;
 
 public class DatePicker extends BasePage {
-    protected final String day = TARGET_DATE.split("\\.")[0];
-    protected final String month = TARGET_DATE.split("\\.")[1];
-    protected final String year = TARGET_DATE.split("\\.")[2];
+    protected static final String day = TARGET_DATE.split(Pattern.quote("."))[0];
+    protected static final String month = TARGET_DATE.split(Pattern.quote("."))[1];
+    protected static final String year = TARGET_DATE.split(Pattern.quote("."))[2];
 
     @FindBy(how = How.XPATH, using = "//input[@id= 'task_instance_plan_form-start_date_input_input']")
     private SelenideElement calendar_div_start_date;
@@ -31,15 +33,19 @@ public class DatePicker extends BasePage {
     @FindBy(how = How.XPATH, using = "//div[@id='ui-datepicker-div']//dd[@class='ui_tpicker_hour']/div")
     private SelenideElement hour_slider_div;
 
-    String date_cell_xPath = "//table[@class='ui-datepicker-calendar']//a[text()= '?']";
+    private final String date_cell_xPath = "//table[@class='ui-datepicker-calendar']//a[text()= '?']";
 
     private void is_open() {
         calendar_div_start_date.shouldBe(Condition.visible);
+        //better universal condition check mb?
     }
 
+
     public NewRepairProblemPage select_day() {
-        is_open();
-        String ready_xPath = date_cell_xPath.replace("?", day);
+        //is_open();
+        String curent_day = curentDate().split(Pattern.quote("."))[0];
+        Assertions.assertTrue(Integer.parseInt(day) >= Integer.parseInt(curent_day));
+        String ready_xPath = date_cell_xPath.replace("?", replace_dd_to_d_ifNeeds(day));
         $x(ready_xPath).shouldBe(Condition.visible).click();
         return page(NewRepairProblemPage.class);
     }

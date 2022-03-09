@@ -4,10 +4,14 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
+import java.util.regex.Pattern;
+
+import static com.codeborne.selenide.Selenide.$x;
 import static com.codeborne.selenide.Selenide.page;
 
 public class GroupTaskPage extends BasePage{
@@ -37,6 +41,38 @@ public class GroupTaskPage extends BasePage{
     @FindBy(how = How.XPATH, using = "//div[@id='gi_header-header_frame']/div[contains(text(),'Наряд закрыт')]")
     private static SelenideElement taskGroup_closed_check;
 
+    @FindBy(how = How.XPATH, using = "//div[@id='group_interaction_info_form-tab_view']//a[contains(text(), 'Наряды')]")
+    private static SelenideElement tab_tasks;   //вкладка Наряды
+
+    @FindBy(how = How.XPATH, using = "//button[@id='group_interaction_info_form-tab_view-addOrder']")
+    private static SelenideElement newTaskBtn;
+
+    @FindBy(how = How.XPATH, using = "//label[@id='register_cable_order_form-code_gp_category_type_label']")
+    private static SelenideElement newTaskForm_categoryTask;
+
+    @FindBy(how = How.XPATH, using = "//label[@id='register_cable_order_form-gp_order_problem_type_list_label']")
+    private static SelenideElement newTaskForm_classTask;
+
+    @FindBy(how = How.XPATH, using = "//textarea[@id='register_cable_order_form-gp_order_damage']")
+    private static SelenideElement newTaskForm_textarea;
+
+    @FindBy(how = How.XPATH, using = "//input[@id='register_cable_order_form-visit_date_input_input']")
+    private static SelenideElement newTaskForm_calendar;
+
+    @FindBy(how = How.XPATH, using = "//label[@id='register_cable_order_form-plan_selector_label']")
+    private static SelenideElement newTaskForm_time;
+
+    @FindBy(how = How.XPATH, using = "//div[@id='register_cable_order_form-all_worksites_button']")
+    private static SelenideElement newTaskForm_allBtn;  //кнопка Все
+
+    @FindBy(how = How.XPATH, using = "//div[@id='register_cable_order_form-worksites']//input[contains(@id, 'worksite_ac_input')]")
+    private static SelenideElement newTaskForm_regions;  //поле выбора цеха
+
+    @FindBy(how = How.XPATH, using = "//div[@class='dialog-footer-buttons']/button/span[contains(text(), 'Сохранить')]")
+    private static SelenideElement newTaskForm_saveBtn;
+
+    private final String selected_time_xPath = "//div[@id='register_cable_order_form-plan_selector_panel']//tr[@data-label='?']";
+    private final String selected_regions_xPath = "//table[contains(@class, 'ui-autocomplete-items')]//tr[contains(@data-item-label, '?')]";
 
     public static GroupTaskPage open(String href) {
         default_win_handle = driver.getWindowHandle();
@@ -100,5 +136,72 @@ public class GroupTaskPage extends BasePage{
         return page(TasksPage.class);
     }
 
+    public GroupTaskPage tab_tasks() {
+        tab_tasks.shouldBe(Condition.visible).click();
+        newTaskBtn.shouldBe(Condition.visible);     //$always visible, need to change
+        return page(this);
+    }
 
+    public GroupTaskPage click_newTaskBtn() {
+        newTaskBtn.shouldBe(Condition.visible).click();
+        newTaskForm_categoryTask.shouldBe(Condition.visible);
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_select_categoryL() {
+        select_in_DropDownMenu(newTaskForm_categoryTask, "Л");
+        newTaskForm_categoryTask.shouldBe(Condition.text("Л"));
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_select_classOPR() {
+        select_in_DropDownMenu(newTaskForm_classTask, "Охранно-предупредительные работы-Плановые работы по линии");
+        newTaskForm_classTask.shouldBe(Condition.text("Охранно-предупредительные работы-Плановые работы по линии"));
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_input_OPRtext() {
+        newTaskForm_textarea.shouldBe(Condition.visible).click();
+        newTaskForm_textarea.sendKeys(OPRTEXT);
+
+        //$нет проверки на вставленный текст
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_select_Date() {
+        newTaskForm_calendar.shouldBe(Condition.visible).click();
+        new DatePicker().select_day();  //выбирается TARGET_DATE
+        newTaskForm_calendar.shouldHave(Condition.exactValue(TARGET_DATE));
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_select_Time() {
+        newTaskForm_time.shouldBe(Condition.visible).click();
+        String ready_xPath = selected_time_xPath.replace("?", TARGET_TASKS_TIME);
+        $x(ready_xPath).shouldBe(Condition.visible).click();
+        newTaskForm_time.shouldHave(Condition.text(TARGET_TASKS_TIME));
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_click_allBtn() {
+        newTaskForm_allBtn.shouldBe(Condition.visible).click();
+        //$нет проверки
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_select_regions() {
+        newTaskForm_regions.shouldBe(Condition.visible).click();
+        newTaskForm_regions.shouldBe(Condition.visible).clear();
+        newTaskForm_regions.shouldBe(Condition.visible).sendKeys(REGION_NAME);
+        String ready_xPath = selected_regions_xPath.replace("?", REGION_NAME);
+        $x(ready_xPath).shouldBe(Condition.visible).click();
+        //проверка не нужна, autocomlite строит варианты для клика только при наличии точного совпадения, сохранить форму с пустым полем невозможно
+        return page(this);
+    }
+
+    public GroupTaskPage newTaskForm_click_saveBtn() {
+        newTaskForm_saveBtn.shouldBe(Condition.visible).click();
+        //$нет проверки
+        return page(this);
+    }
 }
