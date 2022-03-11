@@ -79,9 +79,9 @@ public class TasksPage extends BasePage{
 
     @DisplayName("Scroll while get full tasks list")
     private void scroll_and_get_full_tasks_list() {
+        reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         //парсим кол-во нарядов в меню  слева в статистике
         int expected_tasks_num = Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
-        //reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         table_body.lastChild().shouldBe(Condition.visible);
         while (this.tasksList_tr.size() < expected_tasks_num) {
             actions().sendKeys(table_body, Keys.END).click().perform();
@@ -105,7 +105,7 @@ public class TasksPage extends BasePage{
     @DisplayName("Все пустые ППР и с текущей датой")
     public List <String> get_all_emtyGroups_links() {
         String oprs_name_starts_with = "ППР";
-        reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
+        //reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         scroll_and_get_full_tasks_list();
         String date = curentDate();
 

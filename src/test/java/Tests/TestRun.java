@@ -9,7 +9,8 @@ import java.util.List;
 
 public class TestRun extends BasePage {
 
-
+    @DisplayName("Закрыть ОПР и ППР")
+    @Test
     public void run(){
         close_all_OPR_tasks();
         close_all_PPR_tasks();
@@ -60,7 +61,6 @@ public class TestRun extends BasePage {
                 .select_monitoringRegions_region1_central();        //Выбран Центральный
     }
 
-    @Test
     public void close_all_OPR_tasks() {
 
         List<String> tasks_OPR_href = TasksPage
@@ -78,7 +78,6 @@ public class TestRun extends BasePage {
                         .close_task_win());
     }
 
-    @Test
     public void close_all_PPR_tasks() {
 
         List <String> GroupTasks_href = TasksPage
