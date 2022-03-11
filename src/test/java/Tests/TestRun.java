@@ -1,16 +1,15 @@
 package Tests;
 
 import PageObject.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.List;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestRun extends BasePage {
 
-    @DisplayName("Закрыть ОПР и ППР")
-    @Test
+    //@DisplayName("Закрыть ОПР и ППР")
+    //@Test
     public void run(){
         close_all_OPR_tasks();
         close_all_PPR_tasks();
@@ -61,6 +60,9 @@ public class TestRun extends BasePage {
                 .select_monitoringRegions_region1_central();        //Выбран Центральный
     }
 
+    @DisplayName("Закрыть все ОПР")
+    @Test
+    @Order(1)
     public void close_all_OPR_tasks() {
 
         List<String> tasks_OPR_href = TasksPage
@@ -78,6 +80,10 @@ public class TestRun extends BasePage {
                         .close_task_win());
     }
 
+
+    @DisplayName("Закрыть все ППР")
+    @Test
+    @Order(2)
     public void close_all_PPR_tasks() {
 
         List <String> GroupTasks_href = TasksPage
@@ -95,6 +101,7 @@ public class TestRun extends BasePage {
                         .click_dialog_form_saveBtn()
                         .close_taskGroup_win());
     }
+
 
 
 

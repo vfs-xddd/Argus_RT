@@ -4,7 +4,9 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
@@ -82,11 +84,11 @@ public class TasksPage extends BasePage{
         reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         //парсим кол-во нарядов в меню  слева в статистике
         int expected_tasks_num = Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
-        table_body.lastChild().shouldBe(Condition.visible);
         while (this.tasksList_tr.size() < expected_tasks_num) {
-            actions().sendKeys(table_body, Keys.END).click().perform();
+            actions().sendKeys(table_body.shouldBe(Condition.visible), Keys.END).click().perform();
         }
         Assertions.assertEquals(expected_tasks_num, this.tasksList_tr.size());
+        System.out.println("scroll end");
     }
 
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
@@ -94,11 +96,10 @@ public class TasksPage extends BasePage{
         String oprs_name_starts_with = "Охранно-предупредительные";
         scroll_and_get_full_tasks_list();
         String date = curentDate();
-
-        return tasksList_a.stream()
-                .filter(el -> el.getText().contains(oprs_name_starts_with))
-                .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date))
-                .map(el -> el.getAttribute("href"))
+        return tasksList_tr.stream()
+                .filter(el -> el.find(By.tagName("a")).getText().contains(oprs_name_starts_with))
+                .filter(el -> !el.find(By.xpath("td[16]")).getText().equals(date))
+                .map(el -> el.find(By.tagName("a")).getAttribute("href"))
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +112,7 @@ public class TasksPage extends BasePage{
 
         return tasksList_a.stream()
                 .filter(el -> el.getText().contains(oprs_name_starts_with))
-            //  .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date))
+            //  .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date)) //есть риск ошибки внеДома, не фикситься ничем, использовать враиант с ОПР метода
                 .map(el -> el.getAttribute("href"))
                 .collect(Collectors.toList());
     }

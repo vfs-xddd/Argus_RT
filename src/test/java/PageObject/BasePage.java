@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.lang.annotation.Native;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,12 +27,12 @@ public class BasePage {
     protected HashMap<String, Integer> streets_map = Data.get_map_streets();
     protected int last_checked_street_id = 0;
     protected final ArrayList <String> STREET_LIST= Data.streets;
-    protected static String TARGET_DATE = "10.03.2022";
+    protected static String TARGET_DATE = "14.03.2022";
     protected int TARGET_HOUR_START = 8;
     protected int TARGET_HOUR_END = 17;
     protected int TARGET_MIN_START = 0;
     protected int TARGET_MIN_END = 0;
-    protected final String TARGET_TASKS_TIME = "08:00 - 17:00"; //в новых нарядах
+    protected final String TARGET_TASKS_TIME = "08:00 - 17:00"; //в новых нарядах   "08:00 - 17:00"
     protected final String REGION_NAME = "Волгоград ЛКУ Центральный";
     protected final String OPRTEXT = "Профилактический осмотр медно-жильного кабеля и ВОЛС размещенных на стенах многоэтажных домов, а также в внутридворовой телефонной канализации, предупредительный ремонт";
 

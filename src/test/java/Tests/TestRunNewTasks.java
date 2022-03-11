@@ -2,6 +2,7 @@ package Tests;
 
 import PageObject.*;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -39,9 +40,14 @@ public class TestRunNewTasks extends BasePage {
         System.out.println("++");
     }
 
+    public void config(String target_date) {
+
+    }
+
     @BeforeAll
     public static void start() {
-        String href = "https://argus.south.rt.ru/argus/views/supportservice/grouprepairproblem/GroupRepairProblemView.xhtml?businessInteraction=GroupRepairProblem-291558252";
+        String groupTaskNum = "292024569";  //номер вконце ссылки
+        String href = "https://argus.south.rt.ru/argus/views/supportservice/grouprepairproblem/GroupRepairProblemView.xhtml?businessInteraction=GroupRepairProblem-" + groupTaskNum;
 
         AuthorisationPage.open()
                 .isOpened()
@@ -55,7 +61,7 @@ public class TestRunNewTasks extends BasePage {
 
     @Test
     public void test2() {
-        int tasks_num = 27;
+        int tasks_num = 1;
         for (int i=1; i<=tasks_num; i++) {
             create_new_task();
             System.out.println(i);
