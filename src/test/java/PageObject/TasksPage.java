@@ -5,6 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.support.FindBy;
@@ -79,41 +80,48 @@ public class TasksPage extends BasePage{
         monitoring_regions_region1_central.shouldBe(Condition.visible);
         return page(this);}
 
+    private int expected_tasks_num() {
+        return Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
+    }
+
     @DisplayName("Scroll while get full tasks list")
     private void scroll_and_get_full_tasks_list() {
         reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         //парсим кол-во нарядов в меню  слева в статистике
-        int expected_tasks_num = Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
+        //int expected_tasks_num = Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
+        int expected_tasks_num = expected_tasks_num();
+        if (expected_tasks_num == 0) return;
         while (this.tasksList_tr.size() < expected_tasks_num) {
             actions().sendKeys(table_body.shouldBe(Condition.visible), Keys.END).click().perform();
         }
         Assertions.assertEquals(expected_tasks_num, this.tasksList_tr.size());
-        System.out.println("scroll end");
     }
 
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
     public List <String> get_all_OPR_links() {
+        if (expected_tasks_num()==0) return new ArrayList<>();
         String oprs_name_starts_with = "Охранно-предупредительные";
         scroll_and_get_full_tasks_list();
         String date = curentDate();
         return tasksList_tr.stream()
-                .filter(el -> el.find(By.tagName("a")).getText().contains(oprs_name_starts_with))
-                .filter(el -> !el.find(By.xpath("td[16]")).getText().equals(date))
-                .map(el -> el.find(By.tagName("a")).getAttribute("href"))
+                .filter(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getText().contains(oprs_name_starts_with))
+                .filter(el -> !el.shouldBe(Condition.exist).find(By.xpath("td[16]")).getText().equals(date))
+                .map(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getAttribute("href"))
                 .collect(Collectors.toList());
     }
 
     @DisplayName("Все пустые ППР и с текущей датой")
     public List <String> get_all_emtyGroups_links() {
+        if (expected_tasks_num()==0) return new ArrayList<>();
         String oprs_name_starts_with = "ППР";
         //reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         scroll_and_get_full_tasks_list();
         String date = curentDate();
 
-        return tasksList_a.stream()
-                .filter(el -> el.getText().contains(oprs_name_starts_with))
+        return tasksList_tr.stream()
+                .filter(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getText().contains(oprs_name_starts_with))
             //  .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date)) //есть риск ошибки внеДома, не фикситься ничем, использовать враиант с ОПР метода
-                .map(el -> el.getAttribute("href"))
+                .map(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getAttribute("href"))
                 .collect(Collectors.toList());
     }
 

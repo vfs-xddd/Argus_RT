@@ -70,6 +70,11 @@ public class TestRun extends BasePage {
                 .is_checked_monitoringRegions_region1_central()
                 .get_all_OPR_links();
 
+        if (tasks_OPR_href.isEmpty()) {
+            System.out.println("Нет ниодного пустого наряда ОПР");
+            return;
+        }
+
         tasks_OPR_href.forEach(
                 href -> OneTaskPage.open(href)
                         .click_closeBtn()
@@ -86,12 +91,17 @@ public class TestRun extends BasePage {
     @Order(2)
     public void close_all_PPR_tasks() {
 
-        List <String> GroupTasks_href = TasksPage
+        List <String> groupTasks_href = TasksPage
                 .isOpened()
                 .is_checked_monitoringRegions_region1_central()
                 .get_all_emtyGroups_links();
 
-        GroupTasks_href.forEach(
+        if (groupTasks_href.isEmpty()) {
+            System.out.println("Нет ниодного пустого наряда ППР");
+            return;
+        }
+
+        groupTasks_href.forEach(
                 href -> GroupTaskPage.open(href)
                         .select_solutionField_close()
                         .click_closeBtn()
