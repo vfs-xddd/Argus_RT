@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
 import static com.codeborne.selenide.Selenide.*;
 
 public class DatePicker extends BasePage {
-    protected static final String day = TARGET_DATE.split(Pattern.quote("."))[0];
-    protected static final String month = TARGET_DATE.split(Pattern.quote("."))[1];
-    protected static final String year = TARGET_DATE.split(Pattern.quote("."))[2];
+    protected final String day = TARGET_DATE.split(Pattern.quote("."))[0];
+    protected  final String month = TARGET_DATE.split(Pattern.quote("."))[1];
+    protected  final String year = TARGET_DATE.split(Pattern.quote("."))[2];
 
     @FindBy(how = How.XPATH, using = "//input[@id= 'task_instance_plan_form-start_date_input_input']")
     private SelenideElement calendar_div_start_date;

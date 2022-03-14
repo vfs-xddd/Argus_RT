@@ -1,12 +1,16 @@
 package Tests;
 
 import PageObject.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class TestRunNewTasks extends BasePage {
 
@@ -40,13 +44,23 @@ public class TestRunNewTasks extends BasePage {
         System.out.println("++");
     }
 
-    public void config(String target_date) {
+    public static void configTests() {
+        final Map<String, String> new_props =
+                Arrays.stream(new String[][] {
+                        { "TARGET_DATE", "15.03.2022" },
+                        { "groupTaskNum", "292551209" },
+                        { "TARGET_TASKS_TIME", "08:00 - 17:00" },
+                        { "repeats", "25" },
+                }).collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
 
+       new_props.forEach(System::setProperty);
     }
+
 
     @BeforeAll
     public static void start() {
-        String groupTaskNum = "292024569";  //номер вконце ссылки
+        configTests();
+        String groupTaskNum = System.getProperty("groupTaskNum");  //номер вконце ссылки
         String href = "https://argus.south.rt.ru/argus/views/supportservice/grouprepairproblem/GroupRepairProblemView.xhtml?businessInteraction=GroupRepairProblem-" + groupTaskNum;
 
         AuthorisationPage.open()
@@ -59,9 +73,10 @@ public class TestRunNewTasks extends BasePage {
         GroupTaskPage.open_here(href);
     }
 
+    @DisplayName("Создать новую задачу")
     @Test
     public void test2() {
-        int tasks_num = 1;
+        int tasks_num = Integer.parseInt(System.getProperty("repeats"));
         for (int i=1; i<=tasks_num; i++) {
             create_new_task();
             System.out.println(i);
@@ -82,5 +97,7 @@ public class TestRunNewTasks extends BasePage {
                 .newTaskForm_select_regions()
                 .newTaskForm_click_saveBtn();
     }
+
+
 
 }

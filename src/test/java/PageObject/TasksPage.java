@@ -1,6 +1,7 @@
 package PageObject;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ public class TasksPage extends BasePage{
     @FindBy(how = How.XPATH, using = "//tbody[@id='tbl_frm-tbl_data']/tr")
     private List <SelenideElement> tasksList_tr;
 
-    @FindBy(how = How.XPATH, using = "//tbody[@id='tbl_frm-tbl_data']/tr//a")
+    @FindBy(how = How.XPATH, using = "//tbody[@id='tbl_frm-tbl_data']/tr/td[2]//a")
     private List <SelenideElement> tasksList_a;
 
     @FindBy(how = How.XPATH, using = "//tbody[@id='tbl_frm-tbl_data']/parent::table")
@@ -85,28 +86,30 @@ public class TasksPage extends BasePage{
     }
 
     @DisplayName("Scroll while get full tasks list")
-    private void scroll_and_get_full_tasks_list() {
+    private List<String> scroll_and_get_full_tasks_list() {
         reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
         //парсим кол-во нарядов в меню  слева в статистике
-        //int expected_tasks_num = Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
         int expected_tasks_num = expected_tasks_num();
-        if (expected_tasks_num == 0) return;
-        while (this.tasksList_tr.size() < expected_tasks_num) {
+        if (expected_tasks_num == 0) return new ArrayList<>();
+        while (this.tasksList_a.size() < expected_tasks_num) {
             actions().sendKeys(table_body.shouldBe(Condition.visible), Keys.END).click().perform();
         }
-        Assertions.assertEquals(expected_tasks_num, this.tasksList_tr.size());
+        Assertions.assertEquals(expected_tasks_num, this.tasksList_a.size());
+        return tasksList_a.stream().map(el->el.getAttribute("href")).collect(Collectors.toList());
     }
 
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
     public List <String> get_all_OPR_links() {
         if (expected_tasks_num()==0) return new ArrayList<>();
         String oprs_name_starts_with = "Охранно-предупредительные";
-        scroll_and_get_full_tasks_list();
         String date = curentDate();
-        return tasksList_tr.stream()
-                .filter(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getText().contains(oprs_name_starts_with))
-                .filter(el -> !el.shouldBe(Condition.exist).find(By.xpath("td[16]")).getText().equals(date))
-                .map(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getAttribute("href"))
+        List <String> a_list = scroll_and_get_full_tasks_list();
+        String xPath_toDate = "//tbody[@id='tbl_frm-tbl_data']//a[@href='?']/ancestor::td/following-sibling::td[14]";
+        String xPath_start = "//tbody[@id='tbl_frm-tbl_data']//a[@href='?']/parent::div";
+
+        return a_list.stream()
+                .filter(el -> $x(xPath_start.replace("?", el.substring(25))).shouldBe(Condition.exist).getText().contains(oprs_name_starts_with))
+                .filter(el -> !$x(xPath_toDate.replace("?", el.substring(25))).shouldBe(Condition.exist).getText().substring(17).equals(date))
                 .collect(Collectors.toList());
     }
 
@@ -114,14 +117,15 @@ public class TasksPage extends BasePage{
     public List <String> get_all_emtyGroups_links() {
         if (expected_tasks_num()==0) return new ArrayList<>();
         String oprs_name_starts_with = "ППР";
-        //reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
-        scroll_and_get_full_tasks_list();
         String date = curentDate();
+        List <String> a_list = scroll_and_get_full_tasks_list();
+        String xPath_toDate = "//tbody[@id='tbl_frm-tbl_data']//a[@href='?']/ancestor::td/following-sibling::td[14]";
+        String xPath_start = "//tbody[@id='tbl_frm-tbl_data']//a[@href='?']/parent::div";
 
-        return tasksList_tr.stream()
-                .filter(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getText().contains(oprs_name_starts_with))
-            //  .filter(el -> !el.parent().parent().sibling(13).getText().substring(17).equals(date)) //есть риск ошибки внеДома, не фикситься ничем, использовать враиант с ОПР метода
-                .map(el -> el.shouldBe(Condition.exist).find(By.tagName("a")).getAttribute("href"))
+        return a_list.stream()
+                .filter(el -> $x(xPath_start.replace("?", el.substring(25))).shouldBe(Condition.exist)
+                        .getText().contains(oprs_name_starts_with))
+                //.filter(el -> !$x(xPath_toDate.replace("?", el.substring(25))).shouldBe(Condition.exist).getText().substring(17).equals(date))
                 .collect(Collectors.toList());
     }
 
