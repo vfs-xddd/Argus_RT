@@ -88,14 +88,14 @@ public class TasksPage extends BasePage{
     @DisplayName("Scroll while get full tasks list")
     private List<String> scroll_and_get_full_tasks_list() {
         reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
-        //парсим кол-во нарядов в меню  слева в статистике
-        int expected_tasks_num = expected_tasks_num();
-        if (expected_tasks_num == 0) return new ArrayList<>();
-        while (this.tasksList_a.size() < expected_tasks_num) {
+        if (expected_tasks_num() == 0) return new ArrayList<>();    //парсим кол-во нарядов в меню  слева в статистике
+        List <String> href_list = new ArrayList<>();
+        while (href_list.size() != expected_tasks_num()) {
             actions().sendKeys(table_body.shouldBe(Condition.visible), Keys.END).click().perform();
+            href_list = tasksList_a.stream().filter(SelenideElement::exists).map(el->el.getAttribute("href")).collect(Collectors.toList());
         }
-        Assertions.assertEquals(expected_tasks_num, this.tasksList_a.size());
-        return tasksList_a.stream().map(el->el.getAttribute("href")).collect(Collectors.toList());
+        Assertions.assertEquals(expected_tasks_num(), href_list.size());
+        return href_list;
     }
 
     @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты")
@@ -127,15 +127,6 @@ public class TasksPage extends BasePage{
                         .getText().contains(oprs_name_starts_with))
                 //.filter(el -> !$x(xPath_toDate.replace("?", el.substring(25))).shouldBe(Condition.exist).getText().substring(17).equals(date))
                 .collect(Collectors.toList());
-    }
-
-    @DisplayName("Все Охранно-предупредительные работы, кроме текущей даты. Все пустые ППР и с текущей датой")
-    public List <List<String>> get_all_OPR_and_emtyGroups_links() {
-
-        List <List<String>> res = new ArrayList<>();
-        res.add(get_all_OPR_links());
-        res.add(get_all_emtyGroups_links());
-        return res;
     }
 
 }
