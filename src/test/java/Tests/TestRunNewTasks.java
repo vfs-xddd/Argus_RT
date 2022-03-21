@@ -47,15 +47,15 @@ public class TestRunNewTasks extends BasePage {
     public static void configTests() {
         final Map<String, String> new_props =
                 Arrays.stream(new String[][] {
-                        { "TARGET_DATE", "15.03.2022" },
-                        { "groupTaskNum", "292551209" },
+                        //{ "TARGET_DATE", "19.03.2022" },
+                        { "groupTaskNum", "296269690" },
                         { "TARGET_TASKS_TIME", "08:00 - 17:00" },
-                        { "repeats", "25" },
+                        { "TASKS_PER_WORKER", "2" },
+                        { "INDEX_FOR_TASKS_NUM", "0" },     //коофициент +- к кол-ву задач на дню
                 }).collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
 
        new_props.forEach(System::setProperty);
     }
-
 
     @BeforeAll
     public static void start() {
@@ -74,10 +74,13 @@ public class TestRunNewTasks extends BasePage {
     }
 
     @DisplayName("Создать новую задачу")
-    @Test
-    public void test2() {
-        int tasks_num = Integer.parseInt(System.getProperty("repeats"));
-        for (int i=1; i<=tasks_num; i++) {
+    @ParameterizedTest
+    @ValueSource(strings = {"20.03.2022", "21.03.2022"})
+    public void test2(String target_date) {
+        System.setProperty("TARGET_DATE", target_date);
+        int numberOfWorkersPerDay = Employees.get_EmploeesNumPerDay(target_date);
+        int tasks_num_per_day = numberOfWorkersPerDay * Integer.parseInt(System.getProperty("TASKS_PER_WORKER"));
+        for (int i=1; i<=tasks_num_per_day; i++) {
             create_new_task();
             System.out.println(i);
         }

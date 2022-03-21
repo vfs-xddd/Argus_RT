@@ -85,9 +85,24 @@ public class TasksPage extends BasePage{
         return Integer.parseInt(monitoring_regions_region1_central.shouldBe(Condition.visible).parent().sibling(0).shouldBe(Condition.visible).getText().split("/")[0]);
     }
 
+    public TasksPage reloadTableData() {
+        reloadBtn.shouldBe(Condition.visible).click();
+        int sizeBefor = 0;
+        for(int matchCount = 0;matchCount<10;) {
+            sleep(100);
+            boolean all_exist = tasksList_a.stream().noneMatch(el -> !el.exists());
+            if (sizeBefor==tasksList_a.size() & all_exist) matchCount++;
+            else matchCount=0;
+            sizeBefor = tasksList_a.size();
+        }
+        return page(this);
+    }
+
     @DisplayName("Scroll while get full tasks list")
     private List<String> scroll_and_get_full_tasks_list() {
-        reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
+        //reloadBtn.shouldBe(Condition.visible).click();      //обновим данные перед очередным забором
+        //sleep(5000);
+        reloadTableData();
         if (expected_tasks_num() == 0) return new ArrayList<>();    //парсим кол-во нарядов в меню  слева в статистике
         List <String> href_list = new ArrayList<>();
         while (href_list.size() != expected_tasks_num()) {

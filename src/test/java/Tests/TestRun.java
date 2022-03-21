@@ -60,6 +60,11 @@ public class TestRun extends BasePage {
                 .select_monitoringRegions_region1_central();        //Выбран Центральный
     }
 
+    @AfterAll
+    public static void after() {
+        TasksPage.isOpened().reloadTableData();
+    }
+
     @DisplayName("Закрыть все ОПР")
     @Test
     @Order(1)
